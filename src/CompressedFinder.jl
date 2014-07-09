@@ -3,7 +3,7 @@
 # tracks the number of groups in the graph and garuantees that all group IDs
 # will be between 1 and the total group number, inclusive.
 type CompressedFinder{T <: Integer}
-    ids :: Array{T}
+    ids :: Vector{T}
     groups :: T
 end
 
@@ -31,7 +31,7 @@ end
 # index into `uf`.
 function find{T <: Integer}(cf :: CompressedFinder{T}, node :: T)
     if node <= 0 || node > length(cf.ids)
-        throw(ArgumentError("Node $d is out of range for CompressedFinder."))
+        throw(BoundsError("Node $d is out of range for CompressedFinder."))
     end
 
     return cf.ids[node]
