@@ -7,6 +7,7 @@ type CompressedFinder{T <: Integer}
     groups :: T
 end
 
+
 # `CompressedFinder(uf)` creates a `CompressedFinder` instance from the 
 # groups within `uf`.
 function CompressedFinder{T <: Integer}(uf :: UnionFinder{T})
@@ -18,22 +19,22 @@ function CompressedFinder{T <: Integer}(uf :: UnionFinder{T})
         if ids[root] == 0
             groups += 1
             ids[root] = groups
-        else
-            ids[i] = ids[root]
         end
+        ids[i] = ids[root]
     end
     
     return CompressedFinder(ids, groups)
 end
 
+
 # `find(cf, node)` returns the group ID of `node`. `node` must be a valid
 # index into `uf`.
 function find{T <: Integer}(cf :: CompressedFinder{T}, node :: T)
     if node <= 0 || node > length(cf.ids)
-        throw(ArgumentError())
+        throw(ArgumentError("Node $d is out of range for CompressedFinder."))
     end
 
-    return cd.ids[node]
+    return cf.ids[node]
 end
 
 
@@ -43,7 +44,7 @@ function nodes(cf :: CompressedFinder)
 end
 
 
-# `groups(cd)` returns the number of groups in `cd`.
-function groups(cd :: CompressedFinder)
+# `groups(cf)` returns the number of groups in `cf`.
+function groups(cf :: CompressedFinder)
     return cf.groups
 end

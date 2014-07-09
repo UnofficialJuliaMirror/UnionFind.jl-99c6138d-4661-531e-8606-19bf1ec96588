@@ -4,25 +4,25 @@
 type UnionFinder{T <: Integer}
     sizes :: Array{T}
     parents :: Array{T}
+end
 
-    # `UnionFinder(nodes)` returns a `UnionFinder` with `nodes` unconnected
-    # internal nodes.
 
-    function UnionFinder(nodes :: T)
-        if nodes <= 0
-            throw(ArgumentError())
-        end
-        
-        uf = new(Array(T, nodes), Array(T, nodes))
-        reset(uf)
-        
-        return uf
+# `UnionFinder(nodes)` returns a `UnionFinder` with `nodes` unconnected
+# internal nodes.
+function UnionFinder{T <: Integer}(nodes :: T)
+    if nodes <= 0
+        throw(ArgumentError("Non-positive nodes, $nodes."))
     end
+    
+    uf = UnionFinder(Array(T, nodes), Array(T, nodes))
+    reset!(uf)
+    
+    return uf
 end
 
 
 # `reset(uf)` disconnects all the nodes within `uf`.
-function reset(uf :: UnionFinder)
+function reset!(uf :: UnionFinder)
     for i in 1:length(uf.parents)
         uf.sizes[i] = 1
         uf.parents[i] = i
@@ -30,7 +30,7 @@ function reset(uf :: UnionFinder)
 end
 
 
-# `union(uf, iterator)` iterates through `iterator` which returns integer
+# `union!(uf, iterator)` iterates through `iterator` which returns integer
 # edges, (`u`, `v`), and connects them within `uf`. `u` and `v` must be valid
 # node indices for `uf`.
 function union!{T <: Integer}(uf :: UnionFinder{T}, iterator)
@@ -40,13 +40,13 @@ function union!{T <: Integer}(uf :: UnionFinder{T}, iterator)
 end
 
 
-# `union(uf, us, vs)` connects nodes within `uf` which are bridged by
+# `union!(uf, us, vs)` connects nodes within `uf` which are bridged by
 # the edges (`us[i]`, `vs[i]`). All values in `us` and `vs` must be valid node
 # indices for `uf` and `us` and `vs` must be the same length.
 function union!{T <: Integer}(uf :: UnionFinder{T}, 
                               us :: Array{T}, vs :: Array{T})
     if length(us) != length(vs)
-        throw(ArgumentError())
+        throw(ArgumentError("us and vs not of the same length."))
     end
 
     for i in 1:length(us)
@@ -55,33 +55,45 @@ function union!{T <: Integer}(uf :: UnionFinder{T},
 end
 
 
-# `union(uf, idx1, idx2)` connects the nodes within `uf` with indices
-# `idx1` and `idx2`. `idx1` and `idx2` must be valid indices into `uf`.
-function union!{T <: Integer}(uf :: UnionFinder{T}, idx1 :: T, idx2 :: T)
-    if idx1 > length(uf.parents) || idx1 <= 0
-        throw(ArgumentError())
-    elseif idx2 > length(uf.sizes) || idx2 <= 0
-        throw(ArgumentError())
-    end
-
-    root1 = find(uf, idx1)
-    root2 = find(uf, idx2)
-
-    # TODO: Test whether using rank or using size is better for performance.
-    if uf.sizes[root1] < uf.sizes[root2]
-        uf.parents[root1] = root2
-        uf.sizes[root2] += uf.sizes[root1]
-    else
-        uf.parents[root2] = root1
+# `union!(uf, edges)` conncts all nodes within `uf` which are bridged by an
+# edge within `edges`. All edge vertices must be valid node indices.
+function union!{T <: Integer}(uf :: UnionFinder{T}, edges :: Array{(T, T)})
+    for (u, v) in edges
+        union!(uf, u, v)
     end
 end
 
 
-# `find(uf, node)` returns the group ID of `node`. `node` must be a valid
+# `union!(uf, node1, node2)` connects the nodes within `uf` with indices
+# `node1` and `node2`. `node1` and `node2` must be valid indices into `uf`.
+function union!{T <: Integer}(uf :: UnionFinder{T}, node1 :: T, node2 :: T)
+    if node1 > length(uf.parents) || node1 <= 0
+        throw(ArgumentError("node1, $node1, is out of range."))
+    elseif node2 > length(uf.sizes) || node2 <= 0
+        throw(ArgumentError("node2, $node2, is out of range."))
+    end
+
+    root1 = find!(uf, node1)
+    root2 = find!(uf, node2)
+
+    # TODO: Test whether using rank or using size is better for performance.
+    if root1 == root2
+        return
+    elseif uf.sizes[root1] < uf.sizes[root2]
+        uf.parents[root1] = root2
+        uf.sizes[root2] += uf.sizes[root1]
+    else
+        uf.parents[root2] = root1
+        uf.sizes[root1] += uf.sizes[root2]
+    end
+end
+
+
+# `find!(uf, node)` returns the group ID of `node`. `node` must be a valid
 # index into `uf`.
 function find!{T <: Integer}(uf :: UnionFinder{T}, node :: T)
     if node > length(uf.parents) || node <= 0
-        throw(ArgumentError())
+        throw(ArgumentError("$node out of range for UnionFinder."))
     end
 
     if uf.parents[node] != uf.parents[uf.parents[node]]
@@ -91,14 +103,12 @@ function find!{T <: Integer}(uf :: UnionFinder{T}, node :: T)
 end
 
 
-# `compress(uf, node)` compresses the internal parental node tree so that
+# `compress!(uf, node)` compresses the internal parental node tree so that
 # all nodes between `node` and the root of its group will point directly to the
 # root. `node` must be a valid index into `uf`.
-function compress!{T <: Integer}(uf :: UnionFinder{T}, idx :: T)
-    if node > length(uf.parents) || node <= 0
-        throw(ArgumentError())
-    end
-
+#
+# Not publicly exported.
+function compress!{T <: Integer}(uf :: UnionFinder{T}, node :: T)
     child = node
     parent = uf.parents[child]
 
@@ -110,8 +120,9 @@ function compress!{T <: Integer}(uf :: UnionFinder{T}, idx :: T)
 
     child = node
     parent = uf.parents[child]
+    uf.parents[child] = root
 
-    while grandparent != parent
+    while child != parent
         child = parent
         parent = uf.parents[child]
         uf.parents[child] = root
