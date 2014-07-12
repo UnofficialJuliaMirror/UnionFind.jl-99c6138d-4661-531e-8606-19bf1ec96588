@@ -4,22 +4,22 @@
 type UnionFinder{T <: Integer}
     sizes :: Vector{T}
     parents :: Vector{T}
-end
 
-
-# `UnionFinder(nodes)` returns a `UnionFinder` with `nodes` unconnected
-# internal nodes.
-function UnionFinder{T <: Integer}(nodes :: T)
-    if nodes <= 0
-        throw(ArgumentError("Non-positive nodes, $nodes."))
+    # `UnionFinder(nodes)` returns a `UnionFinder` with `nodes` unconnected
+    # internal nodes.
+    function UnionFinder(nodes :: T)
+        if nodes <= 0
+            throw(ArgumentError("Non-positive nodes, $nodes."))
+        end
+        
+        uf = new(Array(T, nodes), Array(T, nodes))
+        reset!(uf)
+        
+        return uf
     end
-    
-    uf = UnionFinder(Array(T, nodes), Array(T, nodes))
-    reset!(uf)
-    
-    return uf
 end
 
+UnionFinder(nodes :: Integer) = UnionFinder{typeof(nodes)}(nodes)
 
 # `reset(uf)` disconnects all the nodes within `uf`.
 function reset!(uf :: UnionFinder)

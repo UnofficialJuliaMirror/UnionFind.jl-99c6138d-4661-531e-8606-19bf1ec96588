@@ -5,26 +5,28 @@
 type CompressedFinder{T <: Integer}
     ids :: Vector{T}
     groups :: T
-end
 
-
-# `CompressedFinder(uf)` creates a `CompressedFinder` instance from the 
-# groups within `uf`.
-function CompressedFinder{T <: Integer}(uf :: UnionFinder{T})
-    groups = zero(T)
-    ids = zeros(T, length(uf.parents))
-
-    for i in one(T):convert(T, length(uf.parents))
-        root = find!(uf, i)
-        if ids[root] == 0
-            groups += 1
-            ids[root] = groups
+    # `CompressedFinder(uf)` creates a `CompressedFinder` instance from the 
+    # groups within `uf`.
+    function CompressedFinder(uf :: UnionFinder{T})
+        groups = zero(T)
+        ids = zeros(T, length(uf.parents))
+        
+        for i in one(T):convert(T, length(uf.parents))
+            root = find!(uf, i)
+            if ids[root] == 0
+                groups += 1
+                ids[root] = groups
+            end
+            ids[i] = ids[root]
         end
-        ids[i] = ids[root]
+        
+        return new(ids, convert(T, groups))
     end
-    
-    return CompressedFinder(ids, convert(T, groups))
 end
+
+
+CompressedFinder(uf :: UnionFinder) = CompressedFinder{eltype(uf.sizes)}(uf)
 
 
 # `find(cf, node)` returns the group ID of `node`. `node` must be a valid
