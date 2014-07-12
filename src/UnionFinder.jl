@@ -68,12 +68,6 @@ end
 # `union!(uf, node1, node2)` connects the nodes within `uf` with indices
 # `node1` and `node2`. `node1` and `node2` must be valid indices into `uf`.
 function union!{T <: Integer}(uf :: UnionFinder{T}, node1 :: T, node2 :: T)
-    if node1 > length(uf.parents) || node1 <= 0
-        throw(BoundsError("node1, $node1, is out of range."))
-    elseif node2 > length(uf.sizes) || node2 <= 0
-        throw(BoundsError("node2, $node2, is out of range."))
-    end
-
     root1 = find!(uf, node1)
     root2 = find!(uf, node2)
 
@@ -94,9 +88,8 @@ end
 # index into `uf`.
 function find!{T <: Integer}(uf :: UnionFinder{T}, node :: T)
     if node > length(uf.parents) || node <= 0
-        throw(BoundsError("$node out of range for UnionFinder."))
+        throw(BoundsError())
     end
-
     if uf.parents[node] != uf.parents[uf.parents[node]]
         compress!(uf, node)
     end
@@ -131,8 +124,8 @@ function compress!{T <: Integer}(uf :: UnionFinder{T}, node :: T)
 end
 
 
-# `nodes(uf)` returns the number of nodes in `uf`.
-function nodes(uf :: UnionFinder)
+# `length(uf)` returns the number of nodes in `uf`.
+function Base.length(uf :: UnionFinder)
     return length(uf.parents)
 end
 

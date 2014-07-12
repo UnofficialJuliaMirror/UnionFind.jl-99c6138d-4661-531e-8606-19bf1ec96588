@@ -13,8 +13,8 @@ end
 function CompressedFinder{T <: Integer}(uf :: UnionFinder{T})
     groups = zero(T)
     ids = zeros(T, length(uf.parents))
-    
-    for i in 1:length(uf.parents)
+
+    for i in one(T):convert(T, length(uf.parents))
         root = find!(uf, i)
         if ids[root] == 0
             groups += 1
@@ -23,7 +23,7 @@ function CompressedFinder{T <: Integer}(uf :: UnionFinder{T})
         ids[i] = ids[root]
     end
     
-    return CompressedFinder(ids, groups)
+    return CompressedFinder(ids, convert(T, groups))
 end
 
 
@@ -31,15 +31,15 @@ end
 # index into `uf`.
 function find{T <: Integer}(cf :: CompressedFinder{T}, node :: T)
     if node <= 0 || node > length(cf.ids)
-        throw(BoundsError("Node $d is out of range for CompressedFinder."))
+        throw(BoundsError())
     end
 
     return cf.ids[node]
 end
 
 
-# `nodes(uf)` returns the number of nodes in `cf`.
-function nodes(cf :: CompressedFinder)
+# `length(cf)` returns the number of nodes in `cf`.
+function Base.length(cf :: CompressedFinder)
     return length(cf.ids)
 end
 

@@ -1,8 +1,8 @@
 function check(uf :: UnionFinder, groups :: Array{Array{Int}})
     # Check node count.
 
-    if sum(length, groups) != nodes(uf)
-        println("Found $(nodes(uf)), but expected $(sum(length, groups)).")
+    if sum(length, groups) != length(uf)
+        println("Found $(length(uf)), but expected $(sum(length, groups)).")
         return false
     end
 
@@ -41,8 +41,8 @@ end
 function check(cf :: CompressedFinder, group_set :: Array{Array{Int}})
     # Check node count and group count.
 
-    if sum(length, group_set) != nodes(cf)
-        println("Found $(nodes(cf)), but expected $(sum(length, group_set)).")
+    if sum(length, group_set) != length(cf)
+        println("Found $(length(cf)), but expected $(sum(length, group_set)).")
         return false
     elseif length(group_set) != groups(cf)
         println("Expected $(length(groups)) groups, but got $(groups(cf)).")
