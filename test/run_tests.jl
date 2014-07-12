@@ -5,8 +5,10 @@ using Base.Test
 
 println("Running tests:")
 
-tests = ["table",
-         "errors"]
+tests = ["polymorphism",
+         "table",
+         "errors",
+         "benchmark"]
 
 for name in tests
     file = "$name.jl"
