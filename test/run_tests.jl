@@ -1,5 +1,3 @@
-# TODO: This is a hack. Fix this.
-include("../src/UnionFind.jl")
 using UnionFind
 using Base.Test
 
