@@ -78,21 +78,6 @@ The fields of `UnionFinder` instances should not be accesed by user-level code.
 
 Under construction.
 
-## Swendsen-Wang
-
-Under construction.
-
 ## Kruskal
 
 Under construction.
-
-# Performance
-
-The time required for 
-
-# Project Status
-
-The current API of `UnionFind.jl` should not be considered stable. Current work
-will be focused on 
-
-This library will not reach version 1.0.0 until version 1 of Julia is released.
