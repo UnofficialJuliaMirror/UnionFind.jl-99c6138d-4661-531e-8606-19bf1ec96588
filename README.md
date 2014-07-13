@@ -127,5 +127,3 @@ function kruskal{T <: Integer}(nodes :: T, edges :: Array{(T, T)})
     end
 end
 ```
-
-Under construction.
