@@ -74,6 +74,8 @@ The fields of `UnionFinder` instances should not be accesed by user-level code.
 
 # Examples
 
+## Floodfill
+
 ```julia
 using UnionFind
 
@@ -106,7 +108,7 @@ end
 flatten(x, y, grid) = y + (x - 1)size(grid)[1]
 ```
 
-## Floodfill
+## Kruskal
 
 ```julia
 using UnionFind
@@ -125,9 +127,5 @@ function kruskal{T <: Integer}(nodes :: T, edges :: Array{(T, T)})
     end
 end
 ```
-
-Under construction.
-
-## Kruskal
 
 Under construction.
