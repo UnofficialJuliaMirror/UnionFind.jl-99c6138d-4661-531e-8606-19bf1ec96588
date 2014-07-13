@@ -5,13 +5,6 @@ UnionFind.jl
 undirected graphs. It is written in [Julia 0.2](http://julialang.org/). It is
 currently in version 0.0.1.
 
-# Installation
-
-`UnionFind.jl` is not a member of Julia's registered package list. An
-alternative implementation of the chief underlying data structure,
-the disjoint set, can be found in
-[DataStructures.jl](https://github.com/JuliaLang/DataStructures.jl).
-
 # API
 
 This library exports two types, `UnionFinder`, and `CompressedFinder`.
