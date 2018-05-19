@@ -1,15 +1,18 @@
 using UnionFind
 using Base.Test
 
-println("Running tests:")
+@testset "Polymorphism" begin
+    include("polymorphism.jl")
+end
 
-tests = ["polymorphism",
-         "table",
-         "errors",
-         "benchmark"]
+@testset "Table" begin
+    include("table.jl")
+end
 
-for name in tests
-    file = "$name.jl"
-    println("  *  $file")
-    include(file)
+@testset "Errors" begin
+    include("errors.jl")
+end
+
+@testset "Benchmark" begin
+    include("benchmark.jl")
 end
