@@ -1,18 +1,18 @@
 # `UnionFinder{T <: Integer}` is a graph containing a constant number of nodes
 # which allows for union-find operations. All nodes are indexed by an integer
 # of type `T` which is between 1 an the number of internal nodes.
-type UnionFinder{T <: Integer}
+mutable struct UnionFinder{T <: Integer}
     sizes :: Vector{T}
     parents :: Vector{T}
 
     # `UnionFinder(nodes)` returns a `UnionFinder` with `nodes` unconnected
     # internal nodes.
-    function UnionFinder(nodes :: T)
+    function UnionFinder{T}(nodes :: T) where T
         if nodes <= 0
             throw(ArgumentError("Non-positive nodes, $nodes."))
         end
         
-        uf = new(Array(T, nodes), Array(T, nodes))
+        uf = new(Vector{T}(Int(nodes)), Vector{T}(Int(nodes)))
         reset!(uf)
         
         return uf
@@ -33,7 +33,7 @@ end
 # `union!(uf, iterator)` iterates through `iterator` which returns integer
 # edges, (`u`, `v`), and connects them within `uf`. `u` and `v` must be valid
 # node indices for `uf`.
-function union!{T <: Integer}(uf :: UnionFinder{T}, iterator)
+function union!(uf :: UnionFinder{T}, iterator) where T <: Integer
     for (u, v) in iterator
         union!(uf, u, v)
     end
@@ -43,8 +43,8 @@ end
 # `union!(uf, us, vs)` connects nodes within `uf` which are bridged by
 # the edges (`us[i]`, `vs[i]`). All values in `us` and `vs` must be valid node
 # indices for `uf` and `us` and `vs` must be the same length.
-function union!{T <: Integer}(uf :: UnionFinder{T}, 
-                              us :: Array{T}, vs :: Array{T})
+function union!(uf :: UnionFinder{T},
+                us :: Vector{T}, vs :: Vector{T}) where T <: Integer
     if length(us) != length(vs)
         throw(ArgumentError("us and vs not of the same length."))
     end
@@ -58,7 +58,8 @@ end
 # `union!(uf, edges)` conncts all nodes within `uf` which are bridged by an
 # edge within `edges`. Both vertices for each edge must be valid node indices
 # into `uf`.
-function union!{T <: Integer}(uf :: UnionFinder{T}, edges :: Array{(T, T)})
+function union!(uf :: UnionFinder{T},
+                edges :: Vector{Tuple{T,T}}) where T <: Integer
     for (u, v) in edges
         union!(uf, u, v)
     end
@@ -67,7 +68,7 @@ end
 
 # `union!(uf, node1, node2)` connects the nodes within `uf` with indices
 # `node1` and `node2`. `node1` and `node2` must be valid indices into `uf`.
-function union!{T <: Integer}(uf :: UnionFinder{T}, node1 :: T, node2 :: T)
+function union!(uf :: UnionFinder{T}, node1 :: T, node2 :: T) where T <: Integer
     root1 = find!(uf, node1)
     root2 = find!(uf, node2)
 
@@ -86,7 +87,7 @@ end
 
 # `find!(uf, node)` returns the group ID of `node`. `node` must be a valid
 # index into `uf`.
-function find!{T <: Integer}(uf :: UnionFinder{T}, node :: T)
+function find!(uf :: UnionFinder{T}, node :: T) where T <: Integer
     if node > length(uf.parents) || node <= 0
         throw(BoundsError())
     end
@@ -102,7 +103,7 @@ end
 # root. `node` must be a valid index into `uf`.
 #
 # Not publicly exported.
-function compress!{T <: Integer}(uf :: UnionFinder{T}, node :: T)
+function compress!(uf :: UnionFinder{T}, node :: T) where T <: Integer
     child = node
     parent = uf.parents[child]
 
@@ -131,6 +132,6 @@ end
 
 
 # `size!(uf, node)` returns the size of the group containing `node`.
-function size!{T <: Integer}(uf :: UnionFinder{T}, node :: T)
+function size!(uf :: UnionFinder{T}, node :: T) where T <: Integer
     return uf.sizes[find!(uf, node)]
 end

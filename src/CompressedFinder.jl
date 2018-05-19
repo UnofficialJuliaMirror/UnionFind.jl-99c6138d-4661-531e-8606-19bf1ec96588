@@ -2,13 +2,13 @@
 # which does not support the addition of more edges. `CompressedFinder` also
 # tracks the number of groups in the graph and garuantees that all group IDs
 # will be between 1 and the total group number, inclusive.
-type CompressedFinder{T <: Integer}
+mutable struct CompressedFinder{T <: Integer}
     ids :: Vector{T}
     groups :: T
 
     # `CompressedFinder(uf)` creates a `CompressedFinder` instance from the 
     # groups within `uf`.
-    function CompressedFinder(uf :: UnionFinder{T})
+    function CompressedFinder{T}(uf :: UnionFinder{T}) where T
         groups = zero(T)
         ids = zeros(T, length(uf.parents))
         

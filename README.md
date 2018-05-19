@@ -2,7 +2,7 @@ UnionFind.jl
 ============
 
 `UnionFind.jl` is a light-weight library for identifying groups of nodes in
-undirected graphs. It is written in [Julia 0.2](http://julialang.org/). It is
+undirected graphs. It is written in [Julia 0.6](http://julialang.org/). It is
 currently in version 0.0.1.
 
 # API

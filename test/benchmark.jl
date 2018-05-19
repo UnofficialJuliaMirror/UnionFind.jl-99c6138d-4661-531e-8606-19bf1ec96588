@@ -44,8 +44,8 @@ function bench_grid_union(nodes :: Int, edges :: Int)
 end
 
 function bench_avg(nodes :: Int, frac :: Float64, sweeps :: Int, f :: Function)
-    uts = Array(Float64, sweeps)
-    cts = Array(Float64, sweeps)
+    uts = Vector{Float64}(sweeps)
+    cts = Vector{Float64}(sweeps)
     
     edges = convert(Int, ceil(nodes * frac))
     

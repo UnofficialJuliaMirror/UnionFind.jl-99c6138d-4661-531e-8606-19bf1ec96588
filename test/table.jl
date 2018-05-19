@@ -1,4 +1,4 @@
-function check(uf :: UnionFinder, groups :: Array{Array{Int}})
+function check(uf :: UnionFinder, groups :: Vector{Vector{Int}})
     # Check node count.
 
     if sum(length, groups) != length(uf)
@@ -38,7 +38,7 @@ function check(uf :: UnionFinder, groups :: Array{Array{Int}})
 end
 
 
-function check(cf :: CompressedFinder, group_set :: Array{Array{Int}})
+function check(cf :: CompressedFinder, group_set :: Vector{Vector{Int}})
     # Check node count and group count.
 
     if sum(length, group_set) != length(cf)
@@ -120,33 +120,35 @@ end
 
 
 tests = [# singleton
-         (Array(Int, 0), Array(Int, 0), Array{Int}[[1]]),
+         (Int[], Int[], [[1]]),
          # self loop
-         ([1], [1], Array{Int}[[1]]),
+         ([1], [1], [[1]]),
          # unconnected pair
-         (Array(Int, 0), Array(Int, 0), Array{Int}[[1] [2]]),
+         (Int[], Int[], [[1],[2]]),
          # connected pair
-         ([1], [2], Array{Int}[[1 2]]),
+         ([1], [2], [[1,2]]),
          # floater
-         ([1], [2], Array{Int}[[1 2] [3]]),
+         ([1], [2], [[1,2],[3]]),
          # "V"
-         ([1 2], [2 3], Array{Int}[[1 2 3]]),
+         ([1,2], [2,3], [[1,2,3]]),
          # triangle
-         ([1 2 3], [3 1 2], Array{Int}[[1 2 3]]),
+         ([1,2,3], [3,1,2], [[1,2,3]]),
          # "Z": order 1
-         ([1 2 3], [2 3 4], Array{Int}[[1 2 3 4]]),
+         ([1,2,3], [2,3,4], [[1,2,3,4]]),
          # "Z": order 2
-         ([1 4 2], [2 3 3], Array{Int}[[1 2 3 4]]),
+         ([1,4,2], [2,3,3], [[1,2,3,4]]),
          # diamond
-         ([1 2 4 3 1], [2 4 3 4 3], Array{Int}[[1 2 3 4]]),
+         ([1,2,4,3,1], [2,4,3,4,3], [[1,2,3,4]]),
          # K-5
-         ([1 1 1 1; 2 2 2 2; 3 3 3 3; 4 4 4 4; 5 5 5 5],
-          [2 3 4 5; 1 3 4 5; 1 2 4 5; 1 2 3 5; 1 2 3 4],
-          Array{Int}[[1 2 3 4 5]]),
+         ([1,1,1,1], [2,3,4,5], [[1,2,3,4,5]]),
+         ([2,2,2,2], [1,3,4,5], [[1,2,3,4,5]]),
+         ([3,3,3,3], [1,2,4,5], [[1,2,3,4,5]]),
+         ([4,4,4,4], [1,2,3,5], [[1,2,3,4,5]]),
+         ([5,5,5,5], [1,2,3,4], [[1,2,3,4,5]]),
          # jewish star
-         ([1 3 5 6 4 2], [3 5 1 2 6 4], Array{Int}[[1 3 5] [2 4 6]]),
+         ([1,3,5,6,4,2], [3,5,1,2,6,4], [[1,3,5],[2,4,6]]),
          # barbell
-         ([1 2 3 4 5 6 6], [2 3 1 5 6 4 3], Array{Int}[[1 2 3 4 5 6]])
+         ([1,2,3,4,5,6,6], [2,3,1,5,6,4,3], [[1,2,3,4,5,6]])
          ]
 
 function table_main()
