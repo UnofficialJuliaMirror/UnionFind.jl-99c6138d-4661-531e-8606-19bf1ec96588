@@ -1,5 +1,7 @@
 using UnionFind
-using Base.Test
+
+using Printf
+using Test
 
 @testset "Polymorphism" begin
     include("polymorphism.jl")

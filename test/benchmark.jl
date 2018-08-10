@@ -44,8 +44,8 @@ function bench_grid_union(nodes :: Int, edges :: Int)
 end
 
 function bench_avg(nodes :: Int, frac :: Float64, sweeps :: Int, f :: Function)
-    uts = Vector{Float64}(sweeps)
-    cts = Vector{Float64}(sweeps)
+    uts = Vector{Float64}(undef, sweeps)
+    cts = Vector{Float64}(undef, sweeps)
     
     edges = convert(Int, ceil(nodes * frac))
     
@@ -53,7 +53,7 @@ function bench_avg(nodes :: Int, frac :: Float64, sweeps :: Int, f :: Function)
         uf, uts[i] = f(nodes, edges)
         cts[i] = @elapsed CompressedFinder(uf)
         
-        uts[i] = edges == 0? uts[i]: uts[i] / edges
+        uts[i] = edges == 0 ? uts[i] : uts[i] / edges
         cts[i] = cts[i] / nodes
     end
     

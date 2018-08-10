@@ -12,7 +12,7 @@ mutable struct UnionFinder{T <: Integer}
             throw(ArgumentError("Non-positive nodes, $nodes."))
         end
         
-        uf = new(Vector{T}(Int(nodes)), Vector{T}(Int(nodes)))
+        uf = new(Vector{T}(undef, Int(nodes)), Vector{T}(undef, Int(nodes)))
         reset!(uf)
         
         return uf

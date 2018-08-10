@@ -31,7 +31,7 @@ CompressedFinder(uf :: UnionFinder) = CompressedFinder{eltype(uf.sizes)}(uf)
 
 # `find(cf, node)` returns the group ID of `node`. `node` must be a valid
 # index into `uf`.
-function find{T <: Integer}(cf :: CompressedFinder{T}, node :: T)
+function find(cf :: CompressedFinder{T}, node :: T) where T <: Integer
     if node <= 0 || node > length(cf.ids)
         throw(BoundsError())
     end
