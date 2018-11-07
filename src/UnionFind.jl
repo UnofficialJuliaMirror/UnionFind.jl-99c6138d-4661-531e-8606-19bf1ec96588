@@ -1,5 +1,5 @@
 module UnionFind
-import Base: find, union!
+import Base: union!
 
 export UnionFinder, CompressedFinder
 export reset!, union!, find!, size!, find, groups
