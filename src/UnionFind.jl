@@ -1,4 +1,3 @@
-__precompile__()
 module UnionFind
 import Base: find, union!
 
