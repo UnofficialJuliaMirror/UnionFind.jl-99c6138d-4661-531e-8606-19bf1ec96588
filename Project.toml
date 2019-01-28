@@ -1,5 +1,6 @@
 name = "UnionFind"
-uuid = "8c74da80-9c34-11e8-3e46-f3719fd9c73c"
+uuid = "99c6138d-4661-531e-8606-19bf1ec96588"
+license = "MIT"
 version = "0.1.0"
 
 [deps]
